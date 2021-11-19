@@ -40,14 +40,6 @@ namespace BioAlign{
         m_sequence = nullptr;
     }
 
-    void Node::Update(char* seq){
-        free(m_sequence);
-
-        m_sequence = (char*)malloc(m_size * sizeof(char) + 1);
-        strncpy(m_sequence, seq, m_size);
-        m_sequence[m_size] = '\0';
-    }
-
     const char* Node::Sequence() const{
         return m_sequence;
     }
@@ -71,9 +63,41 @@ namespace BioAlign{
         return result;
     }
 
-    std::ostream& operator<< (std::ostream& os, const Node nd){
+    void Node::Update(char* seq){
+        try{
+            if(strlen(seq) != m_size)
+                throw "In Node::Update(char*) : The given string length does not match the original node.";
+
+            free(m_sequence);
+
+            m_sequence = (char*)malloc(m_size * sizeof(char) + 1);
+            strncpy(m_sequence, seq, m_size);
+            m_sequence[m_size] = '\0';
+        }
+        catch(const char* error_message){
+            std::cout << error_message << std::endl;
+        }
+    }
+
+    void Node::Update(std::string seq){
+        try{
+            if(seq.size() != m_size)
+                throw "In Node::Update(std::string) : The given string length does not match the original node.";
+
+            free(m_sequence);
+
+            m_sequence = (char*)malloc(m_size * sizeof(char) + 1);
+            strncpy(m_sequence, seq.c_str(), m_size);
+            m_sequence[m_size] = '\0';
+        }
+        catch(const char* error_message){
+            std::cout << error_message << std::endl;
+        }
+    }
+
+    std::ostream& operator<< (std::ostream& os, const Node& nd){
         os << "Sequence : " << nd.m_sequence << ", Length = " << nd.m_size;
-        return os
+        return os;
     }
 
     bool Node::operator== (const Node& other){

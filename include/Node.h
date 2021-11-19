@@ -18,8 +18,6 @@ namespace BioAlign{
             int m_size;
             char *m_sequence;
 
-            void Update(char*);
-
         public:
             Node();
             Node(std::string);
@@ -30,6 +28,9 @@ namespace BioAlign{
             const char* Sequence() const;
             int Len() const;
             char At(int) const;
+
+            void Update(char*);
+            void Update(std::string);
 
             friend std::ostream& operator<< (std::ostream&, const Node&);
             bool operator== (const Node&);
