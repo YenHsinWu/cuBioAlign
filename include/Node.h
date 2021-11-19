@@ -1,8 +1,8 @@
-#ifndef __CUBIOALIGN_H__
-#define __CUBIOALIGN_H__
+#ifndef __NODE_H__
+#define __NODE_H__
 
 #include <stdlib.h>
-#include <cstring>
+#include <string.h>
 
 #include <iostream>
 #include <fstream>
@@ -17,6 +17,8 @@ namespace BioAlign{
         private:
             int m_size;
             char *m_sequence;
+
+            void Update(char*);
 
         public:
             Node();

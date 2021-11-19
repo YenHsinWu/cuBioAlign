@@ -13,7 +13,7 @@ namespace BioAlign{
         m_size = seq.size();
 
         m_sequence = (char*)malloc(m_size * sizeof(char) + 1);
-        std::strncpy(m_sequence, seq.c_str(), m_size);
+        strncpy(m_sequence, seq.c_str(), m_size);
         m_sequence[m_size] = '\0';
     }
 
@@ -21,7 +21,7 @@ namespace BioAlign{
         m_size = sz;
 
         m_sequence = (char*)malloc(m_size * sizeof(char) + 1);
-        std::strncpy(m_sequence, seq, m_size);
+        strncpy(m_sequence, seq, m_size);
         m_sequence[m_size] = '\0';
     }
 
@@ -29,7 +29,7 @@ namespace BioAlign{
         m_size = nd.m_size;
 
         m_sequence = (char*)malloc(m_size * sizeof(char) + 1);
-        std::strncpy(m_sequence, nd.m_sequence, m_size);
+        strncpy(m_sequence, nd.m_sequence, m_size);
         m_sequence[m_size] = '\0';
     }
 
@@ -38,6 +38,14 @@ namespace BioAlign{
 
         m_size = 0;
         m_sequence = nullptr;
+    }
+
+    void Node::Update(char* seq){
+        free(m_sequence);
+
+        m_sequence = (char*)malloc(m_size * sizeof(char) + 1);
+        strncpy(m_sequence, seq, m_size);
+        m_sequence[m_size] = '\0';
     }
 
     const char* Node::Sequence() const{
@@ -72,7 +80,7 @@ namespace BioAlign{
         if(m_size != other.m_size)
             return false;
 
-        if(std::strncmp(m_sequence, other.m_sequence, m_size) == 0)
+        if(strncmp(m_sequence, other.m_sequence, m_size) == 0)
             return true;
         return false;
     }
@@ -86,7 +94,7 @@ namespace BioAlign{
 
         free(m_sequence);
         m_sequence = (char*)malloc(m_size * sizeof(char) + 1);
-        std::strncpy(m_sequence, other.m_sequence, m_size);
+        strncpy(m_sequence, other.m_sequence, m_size);
         m_sequence[m_size] = '\0';
     }
 
