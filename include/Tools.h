@@ -20,6 +20,10 @@ namespace BioAlign{
 
     void LowerNode(Node*);
     void UpperNode(Node*);
+
+    void ReadFasta(std::string, std::vector<Node*>&);
+
+    double FindDirectedDistance(Node*, Node*);
 };
 
 #endif
