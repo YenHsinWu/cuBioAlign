@@ -10,6 +10,8 @@ namespace BioAlign{
 
     __global__ void Lowercase(char*, int);
     __global__ void Uppercase(char*, int);
+
+    __global__ void LongestSubstringLen(int*, char*, char*, int, int);
 };
 
 #endif
