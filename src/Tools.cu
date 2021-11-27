@@ -21,6 +21,9 @@ namespace BioAlign{
         cudaMemcpy(seq_host, seq_device, sz, cudaMemcpyDeviceToHost);
 
         nd_ptr->Update(seq_host);
+
+        free(seq_host);
+        cudaFree(seq_device);
     }
 
     void UpperNode(Node *nd_ptr){
@@ -74,16 +77,18 @@ namespace BioAlign{
         }
     }
 
-    double FindDirectedDistance(Node *ndptr_a, Node *ndptr_b){
+    double ACSDistance(Node *ndptr_a, Node *ndptr_b){
         int n = ndptr_a->Len(), m = ndptr_b->Len(), sum;
-        int *lens_ab, *lens_aa, *lens_device;
+        int *lens_ab, *lens_aa, *lens_ba, *lens_bb, *lens_device;
         char *str_a_device, *str_b_device;
-        double result, l_ab, l_aa;
+        double result, l_ab, l_aa, l_ba, l_bb, d_ab, d_ba;
 
-        int thread_num = 512, block_num = (n / thread_num) + 1;
+        int thread_num = 512, block_num;
 
-        lens_ab = (int*)malloc(n * sizeof(int)); // lens_ab[a(0), a(1), ...]. a <-> A. sum(lens_ab) / |A|.
+        lens_ab = (int*)malloc(n * sizeof(int));
         lens_aa = (int*)malloc(n * sizeof(int));
+        lens_ba = (int*)malloc(m * sizeof(int));
+        lens_bb = (int*)malloc(m * sizeof(int));
 
         cudaMalloc(&lens_device, n * sizeof(int));
         cudaMalloc(&str_a_device, n * sizeof(char));
@@ -92,26 +97,49 @@ namespace BioAlign{
         cudaMemcpy(str_a_device, ndptr_a->Sequence(), n * sizeof(char), cudaMemcpyHostToDevice);
         cudaMemcpy(str_b_device, ndptr_b->Sequence(), m * sizeof(char), cudaMemcpyHostToDevice);
 
+        block_num = (n / thread_num) + 1;
         LongestSubstringLen<<<block_num, thread_num>>>(lens_device, str_a_device, str_b_device, n, m);
         cudaMemcpy(lens_ab, lens_device, n * sizeof(int), cudaMemcpyDeviceToHost);
+
+        block_num = (m / thread_num) + 1;
+        LongestSubstringLen<<<block_num, thread_num>>>(lens_device, str_b_device, str_a_device, m, n);
+        cudaMemcpy(lens_ba, lens_device, m * sizeof(int), cudaMemcpyDeviceToHost);
 
         for(int i = 0; i < n; i ++)
             lens_aa[n - i - 1] = i + 1;
 
+        for(int i = 0; i < m; i ++)
+            lens_bb[m - i - 1] = i + 1;
+
         sum = 0;
         for(int i = 0; i < n; i ++)
             sum += lens_ab[i];
-        l_ab = (double)sum / n; // L(A, B). Larger L(A, B) -> Similar A, B.
+        l_ab = (double)sum / n;
 
         sum = 0;
         for(int i = 0; i < n; i ++)
             sum += lens_aa[i];
-        l_aa = (double)sum / n; // L(A, A)
+        l_aa = (double)sum / n;
 
-        result = (log(m) / l_ab) - (log(n) / l_aa); // result = d(A, B).
+        sum = 0;
+        for(int i = 0; i < m; i ++)
+            sum += lens_ba[i];
+        l_ba = (double)sum / m;
+
+        sum = 0;
+        for(int i = 0; i < m; i ++)
+            sum += lens_bb[i];
+        l_bb = (double)sum / m;
+
+        d_ab = (log(m) / l_ab) - (log(n) / l_aa);
+        d_ba = (log(n) / l_ba) - (log(m) / l_bb);
+
+        result = (d_ab + d_ba) * 0.5;
 
         free(lens_ab);
         free(lens_aa);
+        free(lens_ba);
+        free(lens_bb);
         cudaFree(lens_device);
         cudaFree(str_a_device);
         cudaFree(str_b_device);

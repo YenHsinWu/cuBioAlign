@@ -23,7 +23,7 @@ namespace BioAlign{
 
     void ReadFasta(std::string, std::vector<Node*>&);
 
-    double FindDirectedDistance(Node*, Node*);
+    double ACSDistance(Node*, Node*);
 };
 
 #endif
