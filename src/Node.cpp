@@ -28,6 +28,7 @@ namespace BioAlign{
     Node::Node(const Node& nd){
         m_size = nd.m_size;
 
+        free(m_sequence);
         m_sequence = (char*)malloc(m_size * sizeof(char) + 1);
         strncpy(m_sequence, nd.m_sequence, m_size);
         m_sequence[m_size] = '\0';
