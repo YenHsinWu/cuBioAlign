@@ -21,6 +21,8 @@ namespace BioAlign{
             DistMatrix(int, int);
             DistMatrix(const DistMatrix&);
             ~DistMatrix();
+
+            friend std::ostream& operator<< (std::ostream&, const DistMatrix&);
     };
 };
 

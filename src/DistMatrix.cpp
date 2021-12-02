@@ -29,4 +29,15 @@ namespace BioAlign{
         m_col = 0;
         m_dists = nullptr;
     }
+
+    std::ostream& operator<< (std::ostream& os, const DistMatrix& mat){
+        for(int i = 0; i < mat.m_row; i ++){
+            for(int j = 0; j < mat.m_col; j ++)
+                os << mat.m_dists[i * mat.m_row + j] << ' ';
+            os << std::endl;
+        }
+        os << "Rows : " << mat.m_row << ", Cols : " << mat.m_col << std::endl;
+
+        return os;
+    }
 };
