@@ -3,7 +3,9 @@
 
 #include <stdlib.h>
 #include <math.h>
+#include <string.h>
 
+#include <iostream>
 #include <fstream>
 #include <string>
 #include <vector>
@@ -24,6 +26,9 @@ namespace BioAlign{
     void ReadFasta(std::string, std::vector<Node*>&);
 
     double ACSDistance(Node*, Node*);
+
+    void InitKmers(char*, int);
+    double FFPDistance(Node*, Node*, int);
 };
 
 #endif
