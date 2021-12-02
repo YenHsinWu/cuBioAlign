@@ -2,6 +2,7 @@
 #define __BIOALIGN_H__
 
 #include "Node.h"
+#include "DistMatrix.h"
 #include "Tools.h"
 #include "cuTools.cuh"
 
