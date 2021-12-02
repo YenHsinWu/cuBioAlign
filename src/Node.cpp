@@ -64,20 +64,11 @@ namespace BioAlign{
     }
 
     void Node::Update(char* seq){
-        try{
-            if(strlen(seq) != m_size)
-                throw "In Node::Update(char*) : The given string length does not match the original node.";
-            else{
-                free(m_sequence);
+        free(m_sequence);
 
-                m_sequence = (char*)malloc(m_size * sizeof(char) + 1);
-                strncpy(m_sequence, seq, m_size);
-                m_sequence[m_size] = '\0';
-            }
-        }
-        catch(const char* error_message){
-            std::cout << error_message << std::endl;
-        }
+        m_sequence = (char*)malloc(m_size * sizeof(char) + 1);
+        strncpy(m_sequence, seq, m_size);
+        m_sequence[m_size] = '\0';
     }
 
     void Node::Update(std::string seq){
