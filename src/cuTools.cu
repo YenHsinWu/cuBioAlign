@@ -5,6 +5,13 @@ namespace BioAlign{
     // CUDA Tool functions //
     /////////////////////////
 
+    __global__ void VectorHalfAdd(float *vec_a, float *vec_b, float *vec_c, int n){
+        int idx = blockDim.x * blockIdx.x + threadIdx.x;
+
+        if(idx < n)
+            vec_c[idx] = (vec_a[idx] + vec_b[idx]) * 0.5;
+    }
+
     __global__ void Lowercase(char *str, int n){
         int idx = blockDim.x * blockIdx.x + threadIdx.x;
 
@@ -63,6 +70,61 @@ namespace BioAlign{
                     }
                 }
             }
+        }
+    }
+
+    __device__ char* SliceCString(char *source, int start, int end){
+        char *target = (char*)malloc((end - start + 1) * sizeof(char));
+        for(int i = start; i < end; i ++)
+            target[i - start] = source[i];
+        target[end] = '\0';
+
+        return target;
+    }
+
+    __device__ bool CompareCStrings(char *str1, char *str2, int len){
+        for(int i = 0; i < len; i ++){
+            if(str1[i] != str2[i])
+                return false;
+        }
+
+        return true;
+    }
+
+    __global__ void KmersFrequency(float* freq, char* seq, char* kmers, char *subseq, char *subkmers, int k, int kmers_size, int seq_len){
+        int idx = blockDim.x * blockIdx.x + threadIdx.x;
+        int cnt_idx = threadIdx.x;
+        int tmp = 0;
+        __shared__ int cnt[512];
+
+        if(idx < kmers_size){
+            subkmers = SliceCString(kmers, k * idx, k * (idx + 1));
+            for(int i = 0; i < (seq_len - k + 1); i ++){
+                subseq = SliceCString(seq, i, i + k);
+                if(CompareCStrings(subseq, subkmers, k))
+                    freq[idx] += 1;
+            }
+        }
+
+        while(idx < kmers_size){
+            tmp += freq[idx];
+            idx += blockDim.x;
+        }
+        cnt[cnt_idx] = tmp;
+        __syncthreads();
+
+        int b_idx = blockDim.x / 2;
+        while(b_idx != 0){
+            if(cnt_idx < b_idx)
+                cnt[cnt_idx] += cnt[cnt_idx + b_idx];
+            __syncthreads();
+
+            b_idx /= 2;
+        }
+
+        if(cnt_idx == 0){
+            for(int i = 0; i < kmers_size; i ++)
+                freq[i] /= cnt[0]; 
         }
     }
 };
