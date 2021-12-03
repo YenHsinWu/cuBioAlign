@@ -42,13 +42,13 @@ namespace BioAlign{
         for(int i = -1; i < mat.m_row; i ++){
             for(int j = -1; j < mat.m_col; j ++){
                 if(i == -1 && j == -1)
-                    os << "    ";
+                    os << "      ";
                 else if(i == -1 && j != -1)
-                    os << std::setw(4) << j << ' ';
+                    os << std::setw(6) << j << ' ';
                 else if(i != -1 && j == -1)
-                    os << std::setw(2) << i << "   ";
+                    os << std::setw(4) << i << "   ";
                 else
-                    os << std::fixed << std::setw(4) << std::setprecision(2) << mat.m_dists[i * mat.m_row + j] << ' ';
+                    os << std::fixed << std::setw(6) << std::setprecision(2) << mat.m_dists[i * mat.m_row + j] << ' ';
             }
             os << std::endl;
         }
