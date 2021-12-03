@@ -38,6 +38,28 @@ namespace BioAlign{
         m_dists[r * m_row + c] = val;
     }
 
+    void DistMatrix::WriteToFile(std::string fname){
+        std::ofstream output_file;
+        output_file.open(fname);
+
+        for(int i = -1; i < m_row; i ++){
+            for(int j = -1; j < m_col; j ++){
+                if(i == -1 && j == -1)
+                    output_file << "      ";
+                else if(i == -1 && j != -1)
+                    output_file << std::setw(6) << j << ' ';
+                else if(i != -1 && j == -1)
+                    output_file << std::setw(4) << i << "   ";
+                else
+                    output_file << std::fixed << std::setw(6) << std::setprecision(2) << m_dists[i * m_row + j] << ' ';
+            }
+            output_file << std::endl;
+        }
+        output_file << "Rows : " << m_row << ", Cols : " << m_col << std::endl;
+
+        output_file.close();
+    }
+
     std::ostream& operator<< (std::ostream& os, const DistMatrix& mat){
         for(int i = -1; i < mat.m_row; i ++){
             for(int j = -1; j < mat.m_col; j ++){
