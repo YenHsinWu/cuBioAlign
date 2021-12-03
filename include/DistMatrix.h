@@ -5,6 +5,7 @@
 #include <string.h>
 
 #include <iostream>
+#include <iomanip>
 
 namespace BioAlign{
     ///////////////////
@@ -21,6 +22,9 @@ namespace BioAlign{
             DistMatrix(int, int);
             DistMatrix(const DistMatrix&);
             ~DistMatrix();
+
+            double GetElement(int, int) const;
+            void SetElement(int, int, double);
 
             friend std::ostream& operator<< (std::ostream&, const DistMatrix&);
     };
