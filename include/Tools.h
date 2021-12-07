@@ -26,13 +26,17 @@ namespace BioAlign{
     void UpperNode(Node*);
 
     void ReadFasta(std::string, std::vector<Node*>&);
+    void GenerateLeaves(int, std::vector<Vertex*>&);
+
+    void FreeNodes(std::vector<Node*>&);
+    void FreeVertices(std::vector<Vertex*>&);
 
     double ACSDistance(Node*, Node*);
 
     void InitKmers(char*, int);
     double FFPDistance(Node*, Node*, int);
 
-    double FindMin(double*, int, int);
+    void FindMinPosition(double*, int, int, int[]);
     void CreateWeightTree(std::vector<Vertex*>&);
 };
 

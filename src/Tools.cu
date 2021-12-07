@@ -77,6 +77,11 @@ namespace BioAlign{
         }
     }
 
+    void GenerateLeaves(int n, std::vector<Vertex*>& vtxs_ptr){
+        for(int i = 0; i < n; i ++)
+            vtxs_ptr.push_back(new Vertex(std::to_string(i), 0.0));
+    }
+
     double ACSDistance(Node *ndptr_a, Node *ndptr_b){
         int n = ndptr_a->Len(), m = ndptr_b->Len(), sum;
         int *lens_ab, *lens_aa, *lens_ba, *lens_bb, *lens_device;
@@ -246,29 +251,39 @@ namespace BioAlign{
         return result;
     }
 
-    double FindMin(double* mat_elems, int row_num, int col_num){
+    void FindMinPosition(double* mat_elems, int row_num, int col_num, int pos[]){
+        int *min_idxs_host, *min_idxs_device;
         double *mins_host, *mins_device;
         double *elems_device;
         double min = 10e8;
+        int min_ridx;
 
         int thread_num = 512, block_num = (row_num / thread_num) + 1;
 
+        min_idxs_host = (int*)malloc(row_num * sizeof(int));
         mins_host = (double*)malloc(row_num * sizeof(double));
-
+        
+        cudaMalloc(&min_idxs_device, row_num * sizeof(int));
         cudaMalloc(&mins_device, row_num * sizeof(double));
         cudaMalloc(&elems_device, row_num * col_num * sizeof(double));
 
         cudaMemcpy(elems_device, mat_elems, row_num * col_num * sizeof(double), cudaMemcpyHostToDevice);
 
-        Min<<<block_num, thread_num>>>(elems_device, row_num, col_num, mins_device);
+        MinPos<<<block_num, thread_num>>>(elems_device, row_num, col_num, min_idxs_device, mins_device);
 
+        cudaMemcpy(min_idxs_host, min_idxs_device, row_num * sizeof(int), cudaMemcpyDeviceToHost);
         cudaMemcpy(mins_host, mins_device, row_num * sizeof(double), cudaMemcpyDeviceToHost);
 
         for(int i = 0; i < row_num; i ++){
-            if(mins_host[i] < min)
+            if(mins_host[i] < min){
                 min = mins_host[i];
+                min_ridx = i;
+            }
         }
 
-        return min;
+        pos[0] = min_ridx;
+        pos[1] = min_idxs_host[min_ridx];
     }
+
+
 };
