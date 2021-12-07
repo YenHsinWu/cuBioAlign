@@ -3,6 +3,7 @@
 
 #include <stdlib.h>
 #include <string.h>
+#include <malloc.h>
 
 #include <iostream>
 #include <fstream>
@@ -14,9 +15,9 @@
 #include "Tools.h"
 
 namespace BioAlign{
-    ///////////////////
+    //////////////////////
     // DistMatrix class //
-    ///////////////////
+    //////////////////////
 
     class DistMatrix{
         private:
@@ -30,6 +31,8 @@ namespace BioAlign{
             ~DistMatrix();
 
             double GetElement(int, int) const;
+            double* GetRow(int) const;
+            double* GetCol(int) const;
             void SetElement(int, int, double);
 
             void ACS(const std::vector<Node*>&);

@@ -38,6 +38,26 @@ namespace BioAlign{
         m_dists[r * m_row + c] = val;
     }
 
+    double* DistMatrix::GetRow(int r) const{
+        double *row;
+        row = (double*)alloca(m_row * sizeof(double));
+
+        for(int c = 0; c < m_col; c ++)
+            row[c] = m_dists[r * m_row + c];
+
+        return row;
+    }
+
+    double* DistMatrix::GetCol(int c) const{
+        double *col;
+        col = (double*)alloca(m_col * sizeof(double));
+
+        for(int r = 0; r < m_row; r ++)
+            col[r] = m_dists[r * m_row + c];
+
+        return col;
+    }
+
     void DistMatrix::ACS(const std::vector<Node*>& nodes_ptr){
         m_row = nodes_ptr.size();
         m_col = nodes_ptr.size();
