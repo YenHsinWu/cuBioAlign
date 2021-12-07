@@ -18,8 +18,8 @@ namespace BioAlign{
         m_col = mat.m_col;
 
         free(m_dists);
-        m_dists = (double*)malloc(mat.m_row * mat.m_col * sizeof(double));
-        memcpy(m_dists, mat.m_dists, mat.m_row * mat.m_col);
+        m_dists = (double*)malloc(m_row * m_col * sizeof(double));
+        memcpy(m_dists, mat.m_dists, m_row * m_col);
     }
 
     DistMatrix::~DistMatrix(){
@@ -36,6 +36,24 @@ namespace BioAlign{
 
     void DistMatrix::SetElement(int r, int c, double val){
         m_dists[r * m_row + c] = val;
+    }
+
+    void DistMatrix::ACS(const std::vector<Node*>& nodes_ptr){
+        m_row = nodes_ptr.size();
+        m_col = nodes_ptr.size();
+
+        free(m_dists);
+        m_dists = (double*)calloc(m_row * m_col,  sizeof(double));
+
+        double dist;
+
+        for(int i = 0; i < m_row; i ++){
+            for(int j = i + 1; j < m_col; j ++){
+                dist = ACSDistance(nodes_ptr[i], nodes_ptr[j]);
+                this->SetElement(i, j, dist);
+                this->SetElement(j, i, dist);
+            }
+        }
     }
 
     void DistMatrix::WriteToFile(std::string fname){

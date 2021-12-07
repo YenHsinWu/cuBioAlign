@@ -7,7 +7,11 @@
 #include <iostream>
 #include <fstream>
 #include <iomanip>
+#include <vector>
 #include <string>
+
+#include "Node.h"
+#include "Tools.h"
 
 namespace BioAlign{
     ///////////////////
@@ -27,6 +31,8 @@ namespace BioAlign{
 
             double GetElement(int, int) const;
             void SetElement(int, int, double);
+
+            void ACS(const std::vector<Node*>&);
 
             void WriteToFile(std::string);
 
