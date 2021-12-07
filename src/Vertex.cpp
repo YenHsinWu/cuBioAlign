@@ -36,4 +36,9 @@ namespace BioAlign{
         m_left = nullptr;
         m_right = nullptr;
     }
+
+    std::ostream& operator<< (std::ostream& os, const Vertex& vtx){
+        os << "Vertex name : " << vtx.m_name << ", Weight : " << vtx.m_weight << std::endl;
+        return os;
+    }
 };

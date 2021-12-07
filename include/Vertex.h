@@ -22,6 +22,8 @@ namespace BioAlign{
             Vertex(Vertex*, Vertex*, double);
             Vertex(const Vertex&);
             ~Vertex();
+
+            friend std::ostream& operator<< (std::ostream&, const Vertex&);
     };
 };
 
