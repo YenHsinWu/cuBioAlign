@@ -3,6 +3,7 @@
 
 #include "Node.h"
 #include "DistMatrix.h"
+#include "Vertex.h"
 #include "Tools.h"
 #include "cuTools.cuh"
 
