@@ -127,4 +127,18 @@ namespace BioAlign{
                 freq[i] /= cnt[0]; 
         }
     }
+
+    __global__ void Min(double *elems, int row_num, int col_num, double *mins){
+        int r_idx = blockDim.x * blockIdx.x + threadIdx.x;
+        double minimum = 10e8;
+
+        if(r_idx < row_num){
+            for(int c_idx = r_idx + 1; c_idx < col_num; c_idx ++){
+                if(elems[r_idx * row_num + c_idx] < minimum)
+                    minimum = elems[r_idx * row_num + c_idx];
+            }
+        }
+
+        mins[r_idx] = minimum;
+    }
 };

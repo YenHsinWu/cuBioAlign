@@ -19,6 +19,8 @@ namespace BioAlign{
     __device__ void SliceCString(char*, char*, int, int);
     __device__ bool CompareCStrings(char*, char*, int);
     __global__ void KmersFrequency(float*, char*, char*, char*, char*, int, int, int);
+
+    __global__ void Min(double*, int, int, double*);
 };
 
 #endif
