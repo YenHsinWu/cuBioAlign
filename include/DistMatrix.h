@@ -30,6 +30,10 @@ namespace BioAlign{
             DistMatrix(const DistMatrix&);
             ~DistMatrix();
 
+            int GetRowNum() const;
+            int GetColNum() const;
+
+            double* GetElements() const;
             double GetElement(int, int) const;
             double* GetRow(int) const;
             double* GetCol(int) const;

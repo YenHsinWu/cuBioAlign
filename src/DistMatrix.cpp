@@ -30,6 +30,18 @@ namespace BioAlign{
         m_dists = nullptr;
     }
 
+    int DistMatrix::GetRowNum() const{
+        return m_row;
+    }
+
+    int DistMatrix::GetColNum() const{
+        return m_col;
+    }
+
+    double* DistMatrix::GetElements() const{
+        return m_dists;
+    }
+
     double DistMatrix::GetElement(int r, int c) const{
         return m_dists[r * m_row + c];
     }
