@@ -20,7 +20,7 @@ namespace BioAlign{
     __device__ bool CompareCStrings(char*, char*, int);
     __global__ void KmersFrequency(float*, char*, char*, char*, char*, int, int, int);
 
-    __global__ void Min(double*, int, int, double*);
+    __global__ void MinPos(double*, int, int, int*, double*);
 };
 
 #endif

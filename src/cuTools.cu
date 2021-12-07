@@ -128,17 +128,21 @@ namespace BioAlign{
         }
     }
 
-    __global__ void Min(double *elems, int row_num, int col_num, double *mins){
+    __global__ void MinPos(double *elems, int row_num, int col_num, int *min_idxs, double* mins){
         int r_idx = blockDim.x * blockIdx.x + threadIdx.x;
         double minimum = 10e8;
+        int min_idx;
 
         if(r_idx < row_num){
             for(int c_idx = r_idx + 1; c_idx < col_num; c_idx ++){
-                if(elems[r_idx * row_num + c_idx] < minimum)
+                if(elems[r_idx * row_num + c_idx] < minimum){
                     minimum = elems[r_idx * row_num + c_idx];
+                    min_idx = c_idx;
+                }
             }
         }
 
+        min_idxs[r_idx] = min_idx;
         mins[r_idx] = minimum;
     }
 };
