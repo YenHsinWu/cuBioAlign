@@ -12,6 +12,7 @@
 #include <string>
 
 #include "Node.h"
+#include "Vertex.h"
 #include "Tools.h"
 
 namespace BioAlign{
