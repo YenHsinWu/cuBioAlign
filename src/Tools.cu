@@ -245,4 +245,30 @@ namespace BioAlign{
 
         return result;
     }
+
+    double FindMin(double* mat_elems, int row_num, int col_num){
+        double *mins_host, *mins_device;
+        double *elems_device;
+        double min = 10e8;
+
+        int thread_num = 512, block_num = (row_num / thread_num) + 1;
+
+        mins_host = (double*)malloc(row_num * sizeof(double));
+
+        cudaMalloc(&mins_device, row_num * sizeof(double));
+        cudaMalloc(&elems_device, row_num * col_num * sizeof(double));
+
+        cudaMemcpy(elems_device, mat_elems, row_num * col_num * sizeof(double), cudaMemcpyHostToDevice);
+
+        Min<<<block_num, thread_num>>>(elems_device, row_num, col_num, mins_device);
+
+        cudaMemcpy(mins_host, mins_device, row_num * sizeof(double), cudaMemcpyDeviceToHost);
+
+        for(int i = 0; i < row_num; i ++){
+            if(mins_host[i] < min)
+                min = mins_host[i];
+        }
+
+        return min;
+    }
 };
